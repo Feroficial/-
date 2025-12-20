@@ -1,4 +1,4 @@
-# ⭐ MARY_WA
+# ⭐ Michi wabot
 
 <div align="center">
   <img src="https://iili.io/FZQTsXR.jpg" alt="Michi-WaBot Logo" width="150"/>
@@ -13,8 +13,8 @@
 Estos indicadores muestran el estado actualizado del proyecto en GitHub.
 
 ![GitHub stars](https://img.shields.io/github/stars/Ado-rgb/Michi-WaBot?style=for-the-badge&logo=github&color=yellow)
-![GitHub forks](https://img.shields.io/github/forks/Ado-rgb/Michi-WaBot?style=for-the-badge&logo=github&color=blue)
-![GitHub last commit](https://img.shields.io/github/last-commit/Ado-rgb/Michi-WaBot?style=for-the-badge&logo=github&color=green)
+![GitHub forks](https://img.shields.io/github/forks/sandovalwilkerson705-dotcom/MICHI-WA-BOT?style=for-the-badge&logo=github&color=blue)
+![GitHub last commit](https://img.shields.io/github/last-commit/sandovalwilkerson705-dotcom/MICHI-WA-BOT?style=for-the-badge&logo=github&color=green)
 
 ---
 
