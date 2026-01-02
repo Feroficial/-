@@ -102,7 +102,7 @@ const handler = async (msg, { conn, text}) => {
       errMsg += "⚠️ _Error interno del servicio_";
 }
 
-    errMsg += "\n\n> Powered by: *Michi wabot*";
+    errMsg += "\n\n> Powered by: *Barboza*";
 
     await conn.sendMessage(chatID, { text: errMsg}, { quoted: msg});
     await conn.sendMessage(chatID, {
