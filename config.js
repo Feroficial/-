@@ -3,8 +3,8 @@ import chalk from 'chalk'
 import { fileURLToPath } from 'url'
 
 global.owner = [
-  ['584125877491', 'wilker', true],
-  ['5492644893953'],
+  ['5492644893953', 'wilker', true],
+  ['584125877491'],
   ['156981591593126'],
   ['595972314588'],
 ]
@@ -15,7 +15,7 @@ global.prems = []
 global.namebot = 'michi wabot 🧃'
 global.packname = 'michi-wa-bot 🥞'
 global.author = 'wilker | © 2025 🪸'
-global.moneda = '𝗠𝗮𝗻𝗴𝗼𝘀'
+global.moneda = 'Mangos'
 
 
 
