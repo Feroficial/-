@@ -1,30 +1,36 @@
-import fs from 'fs'
-import path from 'path'
+import ws from 'ws'
 
-let handler = async (m, { text }) => {
-  if (!text || !text.replace(/[^0-9]/g, '')) {
-    return m.reply('Debes etiquetar al bot que quieres hacer principal en este grupo.')
+const handler = async (m, { conn }) => {
+  const subBots = [...new Set([...global.conns.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn.user.jid)])]
+
+  if (global.conn?.user?.jid && !subBots.includes(global.conn.user.jid)) {
+    subBots.push(global.conn.user.jid)
   }
 
-  let number = text.replace(/[^0-9]/g, '')
-  let botJid = number + '@s.whatsapp.net'
-  let subbotPath = path.join('./JadiBots', number, 'creds.json')
+  const chat = global.db.data.chats[m.chat]
+  const mentionedJid = await m.mentionedJid
+  const who = mentionedJid[0] ? mentionedJid[0] : m.quoted ? await m.quoted.sender : false
 
-  // Validar si ese número tiene un subbot (existe el creds.json)
-  if (!fs.existsSync(subbotPath)) {
-    return m.reply(`El número *${number}* no corresponde a un Subbot válido (no se encontró su creds.json en JadiBots).`)
+  if (!who) return conn.reply(m.chat, `❀ *Por favor, menciona al Bot (o Sub-bot) o responde a un mensaje suyo para seleccionarlo.*`, m)
+
+  if (!subBots.includes(who)) return conn.reply(m.chat, `ꕥ *El usuario indicado no es un Bot activo del sistema.*`, m)
+
+  if (chat.primaryBot === who) {
+    return conn.reply(m.chat, `➜ @${who.split`@`[0]} *ya está configurado como el Bot Principal aquí.*`, m, { mentions: [who] });
   }
 
-  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
-
-  global.db.data.chats[m.chat].primaryBot = botJid
-
-  m.reply(`✅ El bot principal para este grupo ahora es:\n*${botJid}*`)
+  try {
+    chat.primaryBot = who
+    conn.reply(m.chat, `✰ *¡CONFIGURACIÓN ACTUALIZADA!* ✰\n\n➜ *Nuevo Bot Principal:* @${who.split`@`[0]}\n> A partir de ahora, los comandos en este grupo serán ejecutados preferentemente por este *bot*.`, m, { mentions: [who] })
+  } catch (e) {
+    conn.reply(m.chat, `⚠︎ *Ocurrió un error inesperado:*\n> ${e.message}`, m)
+  }
 }
 
-handler.help = ['setprimary @bot']
-handler.tags = ['serbot']
+handler.help = ['setprimary']
+handler.tags = ['grupo']
 handler.command = ['setprimary']
+handler.group = true
 handler.admin = true
 
 export default handler
