@@ -146,6 +146,6 @@ const cleanName = (name) => name.replace(/[^\w\s-_.]/gi, "").substring(0, 50)
 
 handler.command = handler.help = ["play", "playaudio", "ytmp3", "play2", "playvid", "ytv", "ytmp4", "yt"]
 handler.tags = ["descargas"]
-handler.register = true
+handler.register = false
 
 export default handler
