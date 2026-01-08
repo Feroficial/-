@@ -6,7 +6,7 @@ global.owner = [
   ['5492644893953', 'wilker', true],
   ['584125877491'],
   ['156981591593126'],
-  ['595972314588'],
+  ['595972314588']
 ]
 
 global.mods = []
@@ -16,8 +16,6 @@ global.namebot = 'michi wabot 🧃'
 global.packname = 'michi-wa-bot 🥞'
 global.author = 'wilker | © 2025 🪸'
 global.moneda = 'Mangos'
-
-
 
 global.libreria = 'Baileys'
 global.baileys = 'V 6.7.16'
