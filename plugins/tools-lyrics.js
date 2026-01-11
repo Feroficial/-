@@ -14,7 +14,7 @@ return null
 }
 let final = null
 try {
-const adonixUrl = `https://api-adonix.ultraplus.click/search/lyrics?apikey=WilkerKeydukz9l6871&q=${encodeURIComponent(text)}`
+const adonixUrl = `https://api-adonix.ultraplus.click/search/lyrics?apikey=Mikeywilker1&q=${encodeURIComponent(text)}`
 const res = await fetch(adonixUrl)
 if (!res.ok) throw new Error(`Adonix HTTP: ${res.status}`)
 const json = await res.json()
