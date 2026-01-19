@@ -1,97 +1,60 @@
-import fetch from 'node-fetch'
+import fetch from 'node-fetch';
 
-const cooldown = new Map()
+const handler=async(m,{conn,args,usedPrefix,command})=>{
+const emoji="🌸";
+const tiktokRegex=/^(https?:\/\/)?(www\.|vm\.|vt\.|t\.)?tiktok\.com\/.+/i;
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-
-  if (!args[0]) return m.reply(
-    `📥 Uso correcto:
-${usedPrefix + command} <enlace válido de TikTok>
-
-Ejemplo:
-${usedPrefix + command} https://www.tiktok.com/@usuario/video/123456789`
-  )
-
-  const user = m.sender
-  const now = Date.now()
-  const limit = 10
-  const timeLimit = 5 * 60 * 60 * 1000
-
-  if (!cooldown.has(user)) {
-    cooldown.set(user, { count: 0, lastReset: now })
-  }
-
-  let userData = cooldown.get(user)
-
-  if (now - userData.lastReset > timeLimit) {
-    userData.count = 0
-    userData.lastReset = now
-  }
-
-  if (userData.count >= limit) {
-    let restante = timeLimit - (now - userData.lastReset)
-    let horas = Math.floor(restante / (1000 * 60 * 60))
-    let minutos = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60))
-
-    return m.reply(
-      `⏳ Has alcanzado el límite de *${limit} descargas* en ${command.toUpperCase()}.\n` +
-      `Vuelve a intentarlo en *${horas}h ${minutos}m*.`
-    )
-  }
-
-  userData.count++
-  cooldown.set(user, userData)
-
-  try {
-    await conn.sendMessage(m.chat, { react: { text: '⏳', key: m.key } })
-
-    // API actualizada
-    let apiURL = `https://api-adonix.ultraplus.click/download/tiktok?apikey=Mikeywilker1&url=${encodeURIComponent(args[0])}`
-    let response = await fetch(apiURL)
-    let data = await response.json()
-
-    if (!data.status || !data.result?.video) throw new Error('No se pudo obtener el video')
-
-    let info = data.result
-
-    let caption = `
-📌 Título: *${info.title || 'Sin título'}*
-👤 Autor: *${info.author?.name || 'Desconocido'}*
-
-📊 Estadísticas
-♥ Likes: *${info.likes?.toLocaleString() || 0}*
-💬 Comentarios: *${info.comments?.toLocaleString() || 0}*
-🔁 Compartidos: *${info.shares?.toLocaleString() || 0}*
-👁️ Vistas: *${info.views?.toLocaleString() || 0}*`.trim()
-
-    await conn.sendMessage(m.chat, {
-      video: { url: info.video },
-      caption,
-      fileName: `${info.title || 'video'}.mp4`,
-      mimetype: 'video/mp4',
-      contextInfo: {
-        externalAdReply: {
-          title: info.title || 'Video de TikTok',
-          body: `Autor: ${info.author?.name || 'Desconocido'}`,
-          thumbnailUrl: info.thumbnail || null,
-          sourceUrl: args[0],
-          mediaType: 1,
-          renderLargerThumbnail: true
-        }
-      }
-    }, { quoted: m })
-
-    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } })
-
-  } catch (err) {
-    console.error(err) // Para debugging
-    await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } })
-    m.reply('❌ No se pudo procesar el video. Intenta nuevamente más tarde.')
-  }
+if(!args[0]||!tiktokRegex.test(args[0])){
+return conn.reply(m.chat,`*< DESCARGAS - TIKTOK />*\n\n*☁️ Iɴɢʀᴇsᴇ Uɴ Eɴʟᴀᴄᴇ Dᴇ Vɪᴅᴇᴏ Dᴇ Tɪᴋᴛᴏᴋ.*\n\n*💌 Eᴊᴇᴍᴘʟᴏ:* _${usedPrefix+command} https://vm.tiktok.com/ZM6UHJYtE/_`.trim(),m,rcanal);
 }
 
-handler.command = ['tiktok', 'tt']
-handler.help = ['tiktok']
-handler.tags = ['downloader']
+try{
+await conn.reply(m.chat,`_💌 @${m.sender.split`@`[0]} ᩭ✎Enviando Video, espere un momento..._`,m,rcanal);
 
-export default handler
+const tiktokData=await tiktokdl(args[0]);
+const result=tiktokData?.data;
+
+if(!result?.play){
+return conn.reply(m.chat,`${emoji} ❌ 𝑼𝒑𝒔… 𝒏𝒐 𝒑𝒖𝒅𝒆 𝒐𝒃𝒕𝒆𝒏𝒆𝒓 𝒆𝒍 𝒗𝒊𝒅𝒆𝒐.`,m);
+}
+
+const caption=`_💌  ᩭ✎Tiktok sin marca de agua descargado con éxito_
+
+「${result.title||'✧ 𝑺𝒊𝒏 𝒕𝒊𝒕𝒖𝒍𝒐 ✧'}」
+
+❀ 𝘼𝙐𝙏𝙊𝙍: ${result.author?.nickname||'Desconocido'}
+❀ 𝘿𝙐𝙍𝘼𝘾𝙄𝙊𝙉: ${result.duration||0}s
+❀ 𝙑𝙄𝙎𝙏𝘼𝙎: ${result.play_count||0}
+❀ 𝙇𝙄𝙆𝙀𝙎: ${result.digg_count||0}
+❀ 𝘾𝙊𝙈𝙀𝙉𝙏𝘼𝙍𝙄𝙊𝙎: ${result.comment_count||0}
+❀ 𝘾𝙊𝙈𝙋𝘼𝙍𝙏𝙄𝘿𝙊𝙎: ${result.share_count||0}
+❀ 𝙁𝙀𝘾𝙃𝘼: ${formatDate(result.create_time)}
+`.trim();
+
+await conn.sendFile(m.chat,result.play,'tiktok.mp4',caption,m);
+await m.react("🌸");
+
+}catch(e){
+console.error(e);
+return conn.reply(m.chat,`❌ 𝑬𝒓𝒓𝒐𝒓 𝒂𝒍 𝒅𝒆𝒔𝒄𝒂𝒓𝒈𝒂𝒓:\n${e.message}`,m);
+}
+};
+
+handler.help=['tiktok','tt'].map(v=>v+' *<link>*');
+handler.tags=['descargas'];
+handler.command=['tiktok','tt','tiktokdl','ttdl'];
+handler.group=true;
+handler.register=true;
+
+export default handler;
+
+async function tiktokdl(url){
+const api=`https://www.tikwm.com/api/?url=${url}&hd=1`;
+const res=await fetch(api);
+return await res.json();
+}
+
+function formatDate(timestamp){
+const date=new Date(timestamp*1000);
+return date.toLocaleString('es-ES',{timeZone:'America/Mexico_City'});
+}
